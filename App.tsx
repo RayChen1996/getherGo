@@ -8,12 +8,12 @@ import { RootStack } from "./src/navigation/RootStack";
 export default function App() {
   return (
     <SafeAreaProvider>
-      {/* <AuthProvider> */}
-      <NavigationContainer>
-        <StatusBar style="auto" />
-        <RootStack />
-      </NavigationContainer>
-      {/* </AuthProvider> */}
+      <AuthProvider>
+        <NavigationContainer>
+          <StatusBar style="auto" />
+          <RootStack />
+        </NavigationContainer>
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }
