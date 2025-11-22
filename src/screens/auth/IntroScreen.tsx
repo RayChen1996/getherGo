@@ -8,15 +8,15 @@ type Props = NativeStackScreenProps<RootStackParamList, "Intro">;
 
 export const IntroScreen: React.FC<Props> = ({ navigation }) => {
   const handleGuestMode = () => {
-    // navigation.replace("MainTabs");
+    navigation.replace("MainTabs");
   };
 
   const handleLogin = () => {
-    // navigation.navigate("Auth", { screen: "Login" });
+    navigation.navigate("Auth", { screen: "Login" });
   };
 
   const handleRegister = () => {
-    // navigation.navigate("Auth", { screen: "Register" });
+    navigation.navigate("Auth", { screen: "Register" });
   };
 
   return (
