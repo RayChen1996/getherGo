@@ -14,6 +14,29 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const featuredEvent = allEvents[0];
   const monthlyEvents = allEvents.slice(0, 5);
 
+  const quickActions = [
+    {
+      icon: '🔍',
+      label: '搜寻活动',
+      onPress: () => navigation.navigate('Search'),
+    },
+    {
+      icon: '📅',
+      label: '行事历',
+      onPress: () => navigation.navigate('Calendar'),
+    },
+    {
+      icon: '➕',
+      label: '上传活动',
+      onPress: () => navigation.navigate('Upload'),
+    },
+    {
+      icon: '👤',
+      label: '我的',
+      onPress: () => navigation.navigate('Profile'),
+    },
+  ];
+
   const handleBannerPress = () => {
     if (featuredEvent) {
       navigation.getParent()?.navigate('EventDetail', { eventId: featuredEvent.id });
@@ -59,6 +82,29 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>活动类型</Text>
         <EventTypeChips onTypeSelect={handleTypeSelect} />
+      </View>
+
+      {/* Quick Actions */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>快捷入口</Text>
+          <Text style={styles.sectionHint}>首页 / 搜寻 / 上传 / 行事历 / 我的</Text>
+        </View>
+        <View style={styles.quickActionsContainer}>
+          {quickActions.map((action) => (
+            <TouchableOpacity
+              key={action.label}
+              style={styles.quickAction}
+              onPress={action.onPress}
+              activeOpacity={0.8}
+            >
+              <View style={styles.quickActionIconWrapper}>
+                <Text style={styles.quickActionIcon}>{action.icon}</Text>
+              </View>
+              <Text style={styles.quickActionLabel}>{action.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
       {/* Monthly Activities */}
@@ -164,9 +210,50 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#111827',
   },
+  sectionHint: {
+    fontSize: 12,
+    color: '#6b7280',
+  },
   viewAll: {
     fontSize: 14,
     color: '#6366f1',
+  },
+  quickActionsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    gap: 12,
+  },
+  quickAction: {
+    width: '47%',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  quickActionIconWrapper: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#eef2ff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  quickActionIcon: {
+    fontSize: 20,
+  },
+  quickActionLabel: {
+    fontSize: 16,
+    color: '#111827',
+    fontWeight: '600',
   },
 });
 
