@@ -1,16 +1,22 @@
-import React from 'react';
-import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEvents } from '../../hooks/useEvents';
-import { Tag } from '../../components/common/Tag';
-import { RootStackParamList } from '../../navigation/types';
+import React from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEvents } from "../../hooks/useEvents";
+import { Tag } from "../../components/common/Tag";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'EventDetail'>;
-
-export const EventDetailScreen: React.FC<Props> = ({ route, navigation }) => {
-  const { eventId } = route.params;
+export const EventDetailScreen: React.FC = () => {
+  const router = useRouter();
+  const params = useLocalSearchParams<{ id?: string }>();
+  const eventId = params.id;
   const { getEventById } = useEvents();
-  const event = getEventById(eventId);
+  const event = eventId ? getEventById(eventId) : undefined;
 
   if (!event) {
     return (
@@ -24,7 +30,7 @@ export const EventDetailScreen: React.FC<Props> = ({ route, navigation }) => {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>活动详情</Text>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.closeButton}>✕</Text>
         </TouchableOpacity>
       </View>
@@ -37,7 +43,9 @@ export const EventDetailScreen: React.FC<Props> = ({ route, navigation }) => {
         </View>
 
         <Text style={styles.title}>{event.title}</Text>
-        {event.description && <Text style={styles.description}>{event.description}</Text>}
+        {event.description && (
+          <Text style={styles.description}>{event.description}</Text>
+        )}
 
         <View style={styles.infoRow}>
           <Text style={styles.label}>上传者：</Text>
@@ -71,29 +79,29 @@ export const EventDetailScreen: React.FC<Props> = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: "#e5e7eb",
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#111827',
+    fontWeight: "bold",
+    color: "#111827",
   },
   closeButton: {
     fontSize: 24,
-    color: '#6b7280',
+    color: "#6b7280",
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 250,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: "#e5e7eb",
   },
   content: {
     padding: 16,
@@ -103,30 +111,29 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#111827',
+    fontWeight: "bold",
+    color: "#111827",
     marginBottom: 12,
   },
   description: {
     fontSize: 16,
-    color: '#6b7280',
+    color: "#6b7280",
     lineHeight: 24,
     marginBottom: 16,
   },
   infoRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 12,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
   },
   label: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
   },
   value: {
     fontSize: 16,
-    color: '#6b7280',
+    color: "#6b7280",
     flex: 1,
   },
 });
-

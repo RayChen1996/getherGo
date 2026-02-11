@@ -1,40 +1,45 @@
-import React, { useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Alert, SectionList } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useAuth } from '../../hooks/useAuth';
-import { useEvents } from '../../hooks/useEvents';
-import { EventCard } from '../../components/event/EventCard';
-import { MainTabsParamList } from '../../navigation/types';
-import { Event } from '../../types/event';
-
-type Props = NativeStackScreenProps<MainTabsParamList, 'Calendar'>;
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Alert,
+  SectionList,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { useAuth } from "../../hooks/useAuth";
+import { useEvents } from "../../hooks/useEvents";
+import { EventCard } from "../../components/event/EventCard";
+import { Event } from "../../types/event";
 
 interface SectionData {
   title: string;
   data: Event[];
 }
 
-export const CalendarScreen: React.FC<Props> = ({ navigation }) => {
+export const CalendarScreen: React.FC = () => {
+  const router = useRouter();
   const { isLoggedIn } = useAuth();
   const { allEvents } = useEvents();
 
   useEffect(() => {
     if (!isLoggedIn) {
-      Alert.alert('需要登入', '此功能需登入，请先登入或注册', [
+      Alert.alert("需要登入", "此功能需登入，请先登入或注册", [
         {
-          text: '取消',
-          style: 'cancel',
-          onPress: () => navigation.navigate('Home'),
+          text: "取消",
+          style: "cancel",
+          onPress: () => router.replace("/home"),
         },
         {
-          text: '登入',
+          text: "登入",
           onPress: () => {
-            navigation.getParent()?.navigate('Auth', { screen: 'Login' });
+            router.push("/login");
           },
         },
       ]);
     }
-  }, [isLoggedIn, navigation]);
+  }, [isLoggedIn, router]);
 
   // 模拟收藏的活动（实际应该从用户数据获取）
   const favoriteEvents = allEvents.slice(0, 3);
@@ -79,7 +84,7 @@ export const CalendarScreen: React.FC<Props> = ({ navigation }) => {
           renderItem={({ item }) => (
             <EventCard
               event={item}
-              onPress={() => navigation.getParent()?.navigate('EventDetail', { eventId: item.id })}
+              onPress={() => router.push(`/event/${item.id}`)}
             />
           )}
           renderSectionHeader={({ section }) => (
@@ -97,18 +102,18 @@ export const CalendarScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: "#f9fafb",
   },
   header: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: "#e5e7eb",
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#111827',
+    fontWeight: "bold",
+    color: "#111827",
   },
   list: {
     paddingBottom: 16,
@@ -116,27 +121,26 @@ const styles = StyleSheet.create({
   sectionHeader: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: "#f3f4f6",
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
   },
   empty: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   emptyText: {
     fontSize: 16,
-    color: '#9ca3af',
+    color: "#9ca3af",
   },
   message: {
     fontSize: 16,
-    color: '#6b7280',
-    textAlign: 'center',
+    color: "#6b7280",
+    textAlign: "center",
     marginTop: 32,
   },
 });
-

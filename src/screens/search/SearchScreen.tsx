@@ -1,19 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEvents } from '../../hooks/useEvents';
-import { EventCard } from '../../components/event/EventCard';
-import { MainTabsParamList } from '../../navigation/types';
-import { Event } from '../../types/event';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEvents } from "../../hooks/useEvents";
+import { EventCard } from "../../components/event/EventCard";
+import { Event } from "../../types/event";
+import { EventType } from "../../types/event";
 
-type Props = NativeStackScreenProps<MainTabsParamList, 'Search'>;
-
-export const SearchScreen: React.FC<Props> = ({ route, navigation }) => {
+export const SearchScreen: React.FC = () => {
+  const router = useRouter();
+  const params = useLocalSearchParams<{ type?: string }>();
   const { searchEventsByKeyword, getEventsByType, allEvents } = useEvents();
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [displayEvents, setDisplayEvents] = useState<Event[]>(allEvents);
 
-  const initialType = route.params?.type;
+  const initialType = ((): EventType | undefined => {
+    const raw = params.type;
+    if (
+      raw === "fan" ||
+      raw === "concert" ||
+      raw === "exhibition" ||
+      raw === "other"
+    ) {
+      return raw;
+    }
+    return undefined;
+  })();
 
   useEffect(() => {
     if (initialType) {
@@ -38,7 +56,7 @@ export const SearchScreen: React.FC<Props> = ({ route, navigation }) => {
   };
 
   const handleEventPress = (eventId: string) => {
-    navigation.getParent()?.navigate('EventDetail', { eventId });
+    router.push(`/event/${eventId}`);
   };
 
   return (
@@ -81,30 +99,30 @@ export const SearchScreen: React.FC<Props> = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: "#f9fafb",
   },
   searchBar: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: "#e5e7eb",
   },
   input: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: "#f3f4f6",
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
   },
   resultCount: {
     fontSize: 16,
-    color: '#6366f1',
-    fontWeight: '600',
+    color: "#6366f1",
+    fontWeight: "600",
   },
   filterButton: {
     paddingHorizontal: 12,
@@ -112,18 +130,17 @@ const styles = StyleSheet.create({
   },
   filterText: {
     fontSize: 16,
-    color: '#6366f1',
+    color: "#6366f1",
   },
   list: {
     paddingBottom: 16,
   },
   empty: {
     padding: 32,
-    alignItems: 'center',
+    alignItems: "center",
   },
   emptyText: {
     fontSize: 16,
-    color: '#9ca3af',
+    color: "#9ca3af",
   },
 });
-
