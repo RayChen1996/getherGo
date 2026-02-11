@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { User } from '../types/user';
+import React, { createContext, useContext, useState, ReactNode } from "react";
+import { User } from "../types/user";
+import { mockProfile } from "../data";
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -10,7 +11,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -19,12 +22,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (userData) {
       setUser(userData);
     } else {
-      // 默认假数据
-      setUser({
-        id: '1',
-        name: '测试用户',
-        email: 'test@example.com',
-      });
+      setUser(mockProfile.user);
     }
   };
 
@@ -43,8 +41,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 export const useAuthContext = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuthContext must be used within an AuthProvider');
+    throw new Error("useAuthContext must be used within an AuthProvider");
   }
   return context;
 };
-

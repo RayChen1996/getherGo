@@ -1,7 +1,15 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { Event } from '../../types/event';
-import { Tag } from '../common/Tag';
+import React from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  type GestureResponderEvent,
+} from "react-native";
+import { Event } from "../../types/event";
+import { Tag } from "../common/Tag";
+import { useFavorites } from "../../hooks/useFavorites";
 
 interface EventCardProps {
   event: Event;
@@ -14,6 +22,14 @@ export const EventCard: React.FC<EventCardProps> = ({
   onPress,
   showFavorite = true,
 }) => {
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const favorited = isFavorite(event.id);
+
+  const handleFavoritePress = (e: GestureResponderEvent) => {
+    e.stopPropagation();
+    void toggleFavorite(event);
+  };
+
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
       <View style={styles.imageContainer}>
@@ -22,8 +38,19 @@ export const EventCard: React.FC<EventCardProps> = ({
           <Tag type={event.type} />
         </View>
         {showFavorite && (
-          <TouchableOpacity style={styles.favoriteButton} onPress={() => {}}>
-            <Text style={styles.favoriteIcon}>♡</Text>
+          <TouchableOpacity
+            style={styles.favoriteButton}
+            onPress={handleFavoritePress}
+            activeOpacity={0.85}
+          >
+            <Text
+              style={[
+                styles.favoriteIcon,
+                favorited ? styles.favoriteIconActive : styles.favoriteIconIdle,
+              ]}
+            >
+              {favorited ? "♥" : "♡"}
+            </Text>
           </TouchableOpacity>
         )}
       </View>
@@ -101,7 +128,16 @@ const styles = StyleSheet.create({
   },
   favoriteIcon: {
     fontSize: 18,
-    color: '#ef4444',
+    fontWeight: "700",
+  },
+  favoriteIconIdle: {
+    color: "#e5e7eb",
+    textShadowColor: "rgba(0,0,0,0.35)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  favoriteIconActive: {
+    color: "#ef4444",
   },
   content: {
     flex: 1,

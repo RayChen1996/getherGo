@@ -1,22 +1,21 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useRouter } from "expo-router";
 import { Button } from "../../components/common/Button";
-import { RootStackParamList } from "../../navigation/types";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Intro">;
+export const IntroScreen: React.FC = () => {
+  const router = useRouter();
 
-export const IntroScreen: React.FC<Props> = ({ navigation }) => {
   const handleGuestMode = () => {
-    navigation.replace("MainTabs");
+    router.replace("/home");
   };
 
   const handleLogin = () => {
-    navigation.navigate("Auth", { screen: "Login" });
+    router.push("/login");
   };
 
   const handleRegister = () => {
-    navigation.navigate("Auth", { screen: "Register" });
+    router.push("/register");
   };
 
   return (
